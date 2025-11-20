@@ -3,6 +3,9 @@ using System.Globalization;
 
 namespace Library.Domain.Tests;
 
+/// <summary>
+/// Набор тестов для тестирования доменной области библиотеки
+/// </summary>
 public class LibraryTests(DataSeeder seeder) : IClassFixture<DataSeeder>
 {
     private readonly StringComparer _ruComparer = StringComparer.Create(new CultureInfo("ru-RU"), false);

@@ -22,7 +22,7 @@ public class Reader
     /// <summary>
     /// Адрес читателя
     /// </summary>
-    public required string Address { get; set; }
+    public string? Address { get; set; }
 
     /// <summary>
     /// Телефон читателя

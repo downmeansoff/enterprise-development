@@ -42,7 +42,7 @@ public class BookLoan
     /// <summary>
     /// Количество дней на которое выдана книга
     /// </summary>
-    public required int LoanDays { get; set; }
+    public int? LoanDays { get; set; }
 
     /// <summary>
     /// Дата возврата книги
