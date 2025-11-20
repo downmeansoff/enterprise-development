@@ -1,4 +1,4 @@
-using Library.Domain.Data;
+п»їusing Library.Domain.Data;
 using System.Globalization;
 
 namespace Library.Domain.Tests;
@@ -8,7 +8,7 @@ public class LibraryTests(DataSeeder seeder) : IClassFixture<DataSeeder>
     private readonly StringComparer _ruComparer = StringComparer.Create(new CultureInfo("ru-RU"), false);
 
     /// <summary>
-    /// Вывод информации о выданных книгах, упорядоченных по названию
+    /// Р’С‹РІРѕРґ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РІС‹РґР°РЅРЅС‹С… РєРЅРёРіР°С…, СѓРїРѕСЂСЏРґРѕС‡РµРЅРЅС‹С… РїРѕ РЅР°Р·РІР°РЅРёСЋ
     /// </summary>
     [Fact]
     public void GetIssuedBooksOrderedByTitle()
@@ -22,15 +22,15 @@ public class LibraryTests(DataSeeder seeder) : IClassFixture<DataSeeder>
         var expectedTitles = new[]
         {
                 "1984",
-                "Белая гвардия",
-                "Война и мир",
-                "Гарри Поттер и философский камень",
-                "Мартин Иден",
-                "Мастер и Маргарита",
-                "Оно",
-                "Преступление и наказание",
-                "Сияние",
-                "Три товарища",
+                "Р‘РµР»Р°СЏ РіРІР°СЂРґРёСЏ",
+                "Р’РѕР№РЅР° Рё РјРёСЂ",
+                "Р“Р°СЂСЂРё РџРѕС‚С‚РµСЂ Рё С„РёР»РѕСЃРѕС„СЃРєРёР№ РєР°РјРµРЅСЊ",
+                "РњР°СЂС‚РёРЅ РРґРµРЅ",
+                "РњР°СЃС‚РµСЂ Рё РњР°СЂРіР°СЂРёС‚Р°",
+                "РћРЅРѕ",
+                "РџСЂРµСЃС‚СѓРїР»РµРЅРёРµ Рё РЅР°РєР°Р·Р°РЅРёРµ",
+                "РЎРёСЏРЅРёРµ",
+                "РўСЂРё С‚РѕРІР°СЂРёС‰Р°",
         };
 
         Assert.Equal(expectedTitles, actualTitles);
@@ -38,7 +38,7 @@ public class LibraryTests(DataSeeder seeder) : IClassFixture<DataSeeder>
 
 
     /// <summary>
-    /// Вывод топ 5 читателей, прочитавших больше всего книг за период
+    /// Р’С‹РІРѕРґ С‚РѕРї 5 С‡РёС‚Р°С‚РµР»РµР№, РїСЂРѕС‡РёС‚Р°РІС€РёС… Р±РѕР»СЊС€Рµ РІСЃРµРіРѕ РєРЅРёРі Р·Р° РїРµСЂРёРѕРґ
     /// </summary>
     [Fact]
     public void GetTop5ReadersByPeriod()
@@ -58,11 +58,11 @@ public class LibraryTests(DataSeeder seeder) : IClassFixture<DataSeeder>
 
         var expectedNames = new[]
         {
-                "Иванов Иван Иванович",
-                "Петров Петр Петрович",
-                "Кузнецов Алексей Сергеевич",
-                "Орлова Мария Андреевна",
-                "Сидорова Анна Михайловна"
+                "РРІР°РЅРѕРІ РРІР°РЅ РРІР°РЅРѕРІРёС‡",
+                "РџРµС‚СЂРѕРІ РџРµС‚СЂ РџРµС‚СЂРѕРІРёС‡",
+                "РљСѓР·РЅРµС†РѕРІ РђР»РµРєСЃРµР№ РЎРµСЂРіРµРµРІРёС‡",
+                "РћСЂР»РѕРІР° РњР°СЂРёСЏ РђРЅРґСЂРµРµРІРЅР°",
+                "РЎРёРґРѕСЂРѕРІР° РђРЅРЅР° РњРёС…Р°Р№Р»РѕРІРЅР°"
         };
 
         Assert.Equal(expectedNames, actualNames);
@@ -70,7 +70,7 @@ public class LibraryTests(DataSeeder seeder) : IClassFixture<DataSeeder>
 
 
     /// <summary>
-    /// Вывод читателей, бравших книги на наибольший срок, упорядоченных по ФИО
+    /// Р’С‹РІРѕРґ С‡РёС‚Р°С‚РµР»РµР№, Р±СЂР°РІС€РёС… РєРЅРёРіРё РЅР° РЅР°РёР±РѕР»СЊС€РёР№ СЃСЂРѕРє, СѓРїРѕСЂСЏРґРѕС‡РµРЅРЅС‹С… РїРѕ Р¤РРћ
     /// </summary>
     [Fact]
     public void GetReadersByLongestLoanPeriod()
@@ -89,11 +89,11 @@ public class LibraryTests(DataSeeder seeder) : IClassFixture<DataSeeder>
 
         var expectedNames = new[]
         {
-                "Иванов Иван Иванович",
-                "Кузнецов Алексей Сергеевич",
-                "Орлова Мария Андреевна",
-                "Петров Петр Петрович",
-                "Сидорова Анна Михайловна"
+                "РРІР°РЅРѕРІ РРІР°РЅ РРІР°РЅРѕРІРёС‡",
+                "РљСѓР·РЅРµС†РѕРІ РђР»РµРєСЃРµР№ РЎРµСЂРіРµРµРІРёС‡",
+                "РћСЂР»РѕРІР° РњР°СЂРёСЏ РђРЅРґСЂРµРµРІРЅР°",
+                "РџРµС‚СЂРѕРІ РџРµС‚СЂ РџРµС‚СЂРѕРІРёС‡",
+                "РЎРёРґРѕСЂРѕРІР° РђРЅРЅР° РњРёС…Р°Р№Р»РѕРІРЅР°"
         }
         .OrderBy(n => n, _ruComparer)
         .ToArray();
@@ -103,7 +103,7 @@ public class LibraryTests(DataSeeder seeder) : IClassFixture<DataSeeder>
 
 
     /// <summary>
-    /// Вывод топ 5 наиболее популярных издательств за последний год
+    /// Р’С‹РІРѕРґ С‚РѕРї 5 РЅР°РёР±РѕР»РµРµ РїРѕРїСѓР»СЏСЂРЅС‹С… РёР·РґР°С‚РµР»СЊСЃС‚РІ Р·Р° РїРѕСЃР»РµРґРЅРёР№ РіРѕРґ
     /// </summary>
     [Fact]
     public void GetTop5PopularPublishersLastYear()
@@ -127,11 +127,11 @@ public class LibraryTests(DataSeeder seeder) : IClassFixture<DataSeeder>
 
         var expectedPublisherNames = new[]
         {
-                "Эксмо",
-                "АСТ",
-                "Вита",
-                "Лабиринт",
-                "Манн Иванов Фербер"
+                "Р­РєСЃРјРѕ",
+                "РђРЎРў",
+                "Р’РёС‚Р°",
+                "Р›Р°Р±РёСЂРёРЅС‚",
+                "РњР°РЅРЅ РРІР°РЅРѕРІ Р¤РµСЂР±РµСЂ"
         };
 
         Assert.Equal(expectedPublisherNames, actualPublisherNames);
@@ -139,7 +139,7 @@ public class LibraryTests(DataSeeder seeder) : IClassFixture<DataSeeder>
 
 
     /// <summary>
-    /// Вывод топ 5 наименее популярных книг за последний год
+    /// Р’С‹РІРѕРґ С‚РѕРї 5 РЅР°РёРјРµРЅРµРµ РїРѕРїСѓР»СЏСЂРЅС‹С… РєРЅРёРі Р·Р° РїРѕСЃР»РµРґРЅРёР№ РіРѕРґ
     /// </summary>
     [Fact]
     public void GetTop5LeastPopularBooksLastYear()
@@ -161,11 +161,11 @@ public class LibraryTests(DataSeeder seeder) : IClassFixture<DataSeeder>
 
         var expectedTitles = new[]
         {
-                "Война и мир",
-                "Мартин Иден",
+                "Р’РѕР№РЅР° Рё РјРёСЂ",
+                "РњР°СЂС‚РёРЅ РРґРµРЅ",
                 "1984",
-                "Белая гвардия",
-                "Гарри Поттер и философский камень"
+                "Р‘РµР»Р°СЏ РіРІР°СЂРґРёСЏ",
+                "Р“Р°СЂСЂРё РџРѕС‚С‚РµСЂ Рё С„РёР»РѕСЃРѕС„СЃРєРёР№ РєР°РјРµРЅСЊ"
         };
 
         Assert.Equal(expectedTitles, actualTitles);
