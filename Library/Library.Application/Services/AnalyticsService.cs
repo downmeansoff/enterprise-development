@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Library.Application.Contracts;
+using Library.Application.Contracts.Analytics;
 using Library.Application.Contracts.Books;
 using Library.Application.Contracts.Publishers;
 using Library.Application.Contracts.Readers;
@@ -51,33 +51,33 @@ public class AnalyticsService(
     /// </summary>
     /// <param name="startDate">Дата начала периода</param>
     /// <param name="endDate">Дата окончания периода</param>
-    /// <returns>Список ReaderDto топ-5 читателей</returns>
-    public async Task<IList<ReaderDto>> GetTopReadersByBooksRead(DateTime startDate, DateTime endDate)
+    /// <returns>Список DTO топ-5 читателей с количеством прочитанных книг</returns>
+    public async Task<IList<TopReaderAnalyticsDto>> GetTopReadersByBooksRead(DateTime startDate, DateTime endDate)
     {
         var allLoans = await loanRepository.ReadAll();
         var allReaders = await readerRepository.ReadAll();
 
-        var topLoanIds = allLoans
+        var topReaderStats = allLoans
             .Where(l => l.LoanDate >= startDate && l.LoanDate <= endDate)
             .GroupBy(l => l.ReaderId)
-            .Select(g => new { ReaderId = g.Key, Count = g.Count() })
-            .OrderByDescending(x => x.Count)
-            .ToList();
-
-        var top5ReaderIds = topLoanIds
-            .Select(x => x.ReaderId)
+            .Select(g => new { ReaderId = g.Key, BooksReadCount = g.Count() })
+            .OrderByDescending(x => x.BooksReadCount)
             .Take(5)
             .ToList();
 
-        var topReaders = allReaders
-            .Where(r => top5ReaderIds.Contains(r.Id))
+        var combinedResults = topReaderStats
+            .Join(allReaders,
+                  tr => tr.ReaderId,
+                  r => r.Id,
+                  (tr, r) => new TopReaderAnalyticsDto
+                  {
+                      Reader = mapper.Map<ReaderDto>(r),
+                      BooksReadCount = tr.BooksReadCount
+                  })
+            .OrderBy(x => x.Reader.FullName, _ruComparer)
             .ToList();
 
-        var finalSortedReaders = topReaders
-            .OrderBy(r => r.FullName, _ruComparer)
-            .ToList();
-
-        return mapper.Map<IList<ReaderDto>>(finalSortedReaders);
+        return combinedResults;
     }
 
     /// <summary>
@@ -110,8 +110,8 @@ public class AnalyticsService(
     /// Получает топ-5 наиболее популярных издательств, по количеству выданных книг, за заданный год
     /// </summary>
     /// <param name="year">Год для анализа</param>
-    /// <returns>Список PublisherDto топ-5 издательств</returns>
-    public async Task<IList<PublisherDto>> GetTop5PopularPublishersByYear(int year)
+    /// <returns>Список DTO топ-5 издательств с количеством выданных книг</returns>
+    public async Task<IList<TopPublisherAnalyticsDto>> GetTop5PopularPublishersByYear(int year)
     {
         var allLoans = await loanRepository.ReadAll();
         var allBooks = await bookRepository.ReadAll();
@@ -122,36 +122,36 @@ public class AnalyticsService(
             .Select(l => l.BookId)
             .ToList();
 
-        var publisherIds = allBooks
+        var publisherStats = allBooks
             .Where(b => relevantLoanBookIds.Contains(b.Id))
-            .Select(b => b.PublisherId)
-            .ToList();
-
-        var topPublisherIds = publisherIds
-            .GroupBy(id => id)
-            .Select(g => new { PublisherId = g.Key, Count = g.Count() })
-            .OrderByDescending(x => x.Count)
-            .ToList();
-
-        var top5Ids = topPublisherIds
-            .Select(x => x.PublisherId)
+            .GroupBy(b => b.PublisherId)
+            .Select(g => new { PublisherId = g.Key, IssuedBookCount = g.Count() })
+            .OrderByDescending(x => x.IssuedBookCount)
             .Take(5)
             .ToList();
 
-        var topPublishers = allPublishers
-            .Where(p => top5Ids.Contains(p.Id))
-            .OrderBy(p => p.Name, _ruComparer)
+        var combinedResults = publisherStats
+            .Join(allPublishers,
+                  ps => ps.PublisherId,
+                  p => p.Id,
+                  (ps, p) => new TopPublisherAnalyticsDto
+                  {
+                      Publisher = mapper.Map<PublisherDto>(p),
+                      IssuedBookCount = ps.IssuedBookCount
+                  })
+            .OrderByDescending(x => x.IssuedBookCount)
+            .ThenBy(x => x.Publisher.Name, _ruComparer)
             .ToList();
 
-        return mapper.Map<IList<PublisherDto>>(topPublishers);
+        return combinedResults;
     }
 
     /// <summary>
     /// Получает топ-5 наименее популярных книг по количеству выдач за заданный год
     /// </summary>
     /// <param name="year">Год для анализа</param>
-    /// <returns>Список BookDto топ-5 наименее популярных книг</returns>
-    public async Task<IList<BookDto>> GetTop5LeastPopularBooksByYear(int year)
+    /// <returns>Список DTO топ-5 наименее популярных книг с количеством выдач</returns>
+    public async Task<IList<BookPopularityAnalyticsDto>> GetTop5LeastPopularBooksByYear(int year)
     {
         var allBooks = await bookRepository.ReadAll();
         var relevantLoans = await loanRepository.ReadAll();
@@ -160,20 +160,26 @@ public class AnalyticsService(
             .Where(l => l.LoanDate.Year == year)
             .ToList();
 
-        var rankedBooks = allBooks
+        var combinedResults = allBooks
             .GroupJoin(
                 relevantLoansThisYear,
                 book => book.Id,
                 loan => loan.BookId,
-                (book, loans) => new { Book = book, Count = loans.Count() }
+                (book, loans) => new { Book = book, LoanCount = loans.Count() }
             )
-            .OrderBy(x => x.Count)
+            .OrderBy(x => x.LoanCount)
             .ThenBy(x => x.Book.Title, _ruComparer)
             .Take(5)
             .ToList();
 
-        var leastPopularBooks = rankedBooks.Select(x => x.Book).ToList();
+        var finalDto = combinedResults
+            .Select(x => new BookPopularityAnalyticsDto
+            {
+                Book = mapper.Map<BookDto>(x.Book),
+                LoanCount = x.LoanCount
+            })
+            .ToList();
 
-        return mapper.Map<IList<BookDto>>(leastPopularBooks);
+        return finalDto;
     }
 }

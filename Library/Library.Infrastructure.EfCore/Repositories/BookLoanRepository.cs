@@ -27,10 +27,7 @@ public class BookLoanRepository(LibraryDbContext context) : IRepository<BookLoan
     /// </summary>
     public async Task<BookLoan?> Read(ObjectId entityId)
     {
-        return await _dbSet
-            .Include(l => l.Book)
-            .Include(l => l.Reader)
-            .FirstOrDefaultAsync(l => l.Id == entityId);
+        return await _dbSet.FirstOrDefaultAsync(l => l.Id == entityId);
     }
 
     /// <summary>
@@ -38,10 +35,7 @@ public class BookLoanRepository(LibraryDbContext context) : IRepository<BookLoan
     /// </summary>
     public async Task<IList<BookLoan>> ReadAll()
     {
-        return await _dbSet
-            .Include(l => l.Book)
-            .Include(l => l.Reader)
-            .ToListAsync();
+        return await _dbSet.ToListAsync();
     }
 
     /// <summary>

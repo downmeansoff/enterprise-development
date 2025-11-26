@@ -1,8 +1,7 @@
 ﻿using Library.Application.Contracts.Books;
-using Library.Application.Contracts.Publishers;
 using Library.Application.Contracts.Readers;
 
-namespace Library.Application.Contracts;
+namespace Library.Application.Contracts.Analytics;
 
 /// <summary>
 /// Интерфейс сервиса для получения аналитической информации по данным библиотеки
@@ -20,8 +19,8 @@ public interface IAnalyticsService
     /// </summary>
     /// <param name="startDate">Дата начала периода</param>
     /// <param name="endDate">Дата окончания периода</param>
-    /// <returns>Список ReaderDto топ-5 читателей</returns>
-    public Task<IList<ReaderDto>> GetTopReadersByBooksRead(DateTime startDate, DateTime endDate);
+    /// <returns>Список DTO топ-5 читателей с количеством прочитанных книг</returns>
+    public Task<IList<TopReaderAnalyticsDto>> GetTopReadersByBooksRead(DateTime startDate, DateTime endDate);
 
     /// <summary>
     /// Получает информацию о читателях, бравших книги на наибольший максимальный срок, упорядоченных по ФИО
@@ -33,13 +32,13 @@ public interface IAnalyticsService
     /// Получает топ-5 наиболее популярных издательств, по количеству выданных книг, за заданный год
     /// </summary>
     /// <param name="year">Год для анализа</param>
-    /// <returns>Список PublisherDto топ-5 издательств</returns>
-    public Task<IList<PublisherDto>> GetTop5PopularPublishersByYear(int year);
+    /// <returns>Список DTO топ-5 издательств с количеством выданных книг</returns>
+    public Task<IList<TopPublisherAnalyticsDto>> GetTop5PopularPublishersByYear(int year);
 
     /// <summary>
     /// Получает топ-5 наименее популярных книг по количеству выдач за заданный год
     /// </summary>
     /// <param name="year">Год для анализа</param>
-    /// <returns>Список BookDto топ-5 наименее популярных книг</returns>
-    public Task<IList<BookDto>> GetTop5LeastPopularBooksByYear(int year);
+    /// <returns>Список DTO топ-5 наименее популярных книг с количеством выдач</returns>
+    public Task<IList<BookPopularityAnalyticsDto>> GetTop5LeastPopularBooksByYear(int year);
 }

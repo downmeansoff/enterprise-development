@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Library.Application.Contracts.BookLoans;
 using Library.Application.Contracts.Books;
 using Library.Application.Contracts.EditionTypes;
 using Library.Application.Contracts.Publishers;
@@ -14,11 +15,13 @@ namespace Library.Application.Services;
 /// <param name="repository">Репозиторий для доступа к данным Book</param>
 /// <param name="editionTypeRepository">Репозиторий для доступа к данным EditionType</param>
 /// <param name="publisherRepository">Репозиторий для доступа к данным Publisher</param>
+/// <param name="loanRepository">Репозиторий для доступа к данным Loan</param>
 /// <param name="mapper">Экземпляр AutoMapper для преобразования DTO</param>
 public class BookService(
     IRepository<Book, ObjectId> repository,
     IRepository<EditionType, ObjectId> editionTypeRepository,
     IRepository<Publisher, ObjectId> publisherRepository,
+    IRepository<BookLoan, ObjectId> loanRepository,
     IMapper mapper) : IBookService
 {
     /// <summary>
@@ -111,5 +114,24 @@ public class BookService(
             ?? throw new KeyNotFoundException($"Издательство с ID {book.PublisherId} не найдено для книги {bookId}");
 
         return mapper.Map<PublisherDto>(publisher);
+    }
+
+    /// <summary>
+    /// Получает все записи о выдаче, связанные с данной книгой
+    /// </summary>
+    /// <param name="bookId">Идентификатор книги</param>
+    /// <returns>Список DTO записей о выдаче</returns>
+    public async Task<IList<BookLoanDto>> GetLoans(ObjectId bookId)
+    {
+        var loans = await loanRepository.ReadAll();
+
+        var relatedLoans = loans
+            .Where(l => l.BookId == bookId)
+            .ToList();
+
+        if (relatedLoans.Count == 0)
+            return [];
+
+        return mapper.Map<IList<BookLoanDto>>(relatedLoans);
     }
 }

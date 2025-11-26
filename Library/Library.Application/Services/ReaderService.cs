@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Library.Application.Contracts;
+using Library.Application.Contracts.BookLoans;
 using Library.Application.Contracts.Readers;
 using Library.Domain;
 using Library.Domain.Model;
@@ -10,9 +11,10 @@ namespace Library.Application.Services;
 /// <summary>
 /// Сервис для выполнения CRUD операций с сущностью Reader
 /// </summary>
-/// <param name="repository">Репозиторий для доступа к данным Reader</param>
+/// <param name="readerRepository">Репозиторий для доступа к данным Reader</param>
+/// <param name="loanRepository">Репозиторий для доступа к данным Loan</param>
 /// <param name="mapper">Экземпляр AutoMapper для преобразования DTO</param>
-public class ReaderService(IRepository<Reader, ObjectId> repository, IMapper mapper) : IApplicationService<ReaderDto, ReaderCreateUpdateDto, ObjectId>
+public class ReaderService(IRepository<Reader, ObjectId> readerRepository, IRepository<BookLoan, ObjectId> loanRepository, IMapper mapper) : IReaderService
 {
     /// <summary>
     /// Создает нового читателя
@@ -23,7 +25,7 @@ public class ReaderService(IRepository<Reader, ObjectId> repository, IMapper map
     {
         var entity = mapper.Map<Reader>(dto);
 
-        var createdEntity = await repository.Create(entity);
+        var createdEntity = await readerRepository.Create(entity);
 
         return mapper.Map<ReaderDto>(createdEntity);
     }
@@ -35,7 +37,7 @@ public class ReaderService(IRepository<Reader, ObjectId> repository, IMapper map
     /// <returns>True если удаление успешно</returns>
     public async Task<bool> Delete(ObjectId dtoId)
     {
-        return await repository.Delete(dtoId);
+        return await readerRepository.Delete(dtoId);
     }
 
     /// <summary>
@@ -45,7 +47,7 @@ public class ReaderService(IRepository<Reader, ObjectId> repository, IMapper map
     /// <returns>Найденный ReaderDto или null</returns>
     public async Task<ReaderDto?> Get(ObjectId dtoId)
     {
-        var entity = await repository.Read(dtoId);
+        var entity = await readerRepository.Read(dtoId);
 
         return mapper.Map<ReaderDto>(entity);
     }
@@ -56,7 +58,7 @@ public class ReaderService(IRepository<Reader, ObjectId> repository, IMapper map
     /// <returns>Список всех ReaderDto</returns>
     public async Task<IList<ReaderDto>> GetAll()
     {
-        var entities = await repository.ReadAll();
+        var entities = await readerRepository.ReadAll();
 
         return mapper.Map<IList<ReaderDto>>(entities);
     }
@@ -69,10 +71,29 @@ public class ReaderService(IRepository<Reader, ObjectId> repository, IMapper map
     /// <returns>Обновленный ReaderDto</returns>
     public async Task<ReaderDto> Update(ReaderCreateUpdateDto dto, ObjectId dtoId)
     {
-        var existingEntity = await repository.Read(dtoId) ?? throw new KeyNotFoundException($"Читатель с ID {dtoId} не найден");
+        var existingEntity = await readerRepository.Read(dtoId) ?? throw new KeyNotFoundException($"Читатель с ID {dtoId} не найден");
         mapper.Map(dto, existingEntity);
 
-        var updatedEntity = await repository.Update(existingEntity);
+        var updatedEntity = await readerRepository.Update(existingEntity);
         return mapper.Map<ReaderDto>(updatedEntity);
+    }
+
+    /// <summary>
+    /// Получает все записи о выдаче, связанные с данным читателем
+    /// </summary>
+    /// <param name="readerId">Идентификатор читателя</param>
+    /// <returns>Список DTO записей о выдаче</returns>
+    public async Task<IList<BookLoanDto>> GetLoans(ObjectId readerId)
+    {
+        var loans = await loanRepository.ReadAll();
+
+        var relatedLoans = loans
+            .Where(l => l.ReaderId == readerId)
+            .ToList();
+
+        if (relatedLoans.Count == 0)
+            return [];
+
+        return mapper.Map<IList<BookLoanDto>>(relatedLoans);
     }
 }

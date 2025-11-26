@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
+using Library.Application.Contracts;
 using Library.Application.Contracts.BookLoans;
-using Library.Application.Contracts.Books;
-using Library.Application.Contracts.Readers;
 using Library.Domain;
 using Library.Domain.Model;
 using MongoDB.Bson;
@@ -12,14 +11,8 @@ namespace Library.Application.Services;
 /// Сервис для выполнения CRUD операций с сущностью BookLoan
 /// </summary>
 /// <param name="repository">Репозиторий для доступа к данным BookLoan</param>
-/// <param name="bookRepository">Репозиторий для доступа к данным Book</param>
-/// <param name="readerRepository">Репозиторий для доступа к данным Reader</param>
 /// <param name="mapper">Экземпляр AutoMapper для преобразования DTO</param>
-public class BookLoanService(
-    IRepository<BookLoan, ObjectId> repository,
-    IRepository<Book, ObjectId> bookRepository,
-    IRepository<Reader, ObjectId> readerRepository,
-    IMapper mapper) : IBookLoanService
+public class BookLoanService(IRepository<BookLoan, ObjectId> repository, IMapper mapper) : IApplicationService<BookLoanDto, BookLoanCreateUpdateDto, ObjectId>
 {
     /// <summary>
     /// Создает новую запись о выдаче книги
@@ -81,35 +74,5 @@ public class BookLoanService(
 
         var updatedEntity = await repository.Update(existingEntity);
         return mapper.Map<BookLoanDto>(updatedEntity);
-    }
-
-    /// <summary>
-    /// Получает книгу связанную с записью о выдаче
-    /// </summary>
-    /// <param name="bookLoanId">Идентификатор записи о выдаче</param>
-    /// <returns>DTO книги</returns>
-    public async Task<BookDto> GetBook(ObjectId bookLoanId)
-    {
-        var loan = await repository.Read(bookLoanId) ?? throw new KeyNotFoundException($"Запись о выдаче с ID {bookLoanId} не найдена");
-
-        var book = await bookRepository.Read(loan.BookId)
-            ?? throw new KeyNotFoundException($"Книга с ID {loan.BookId} не найдена для записи {bookLoanId}");
-
-        return mapper.Map<BookDto>(book);
-    }
-
-    /// <summary>
-    /// Получает читателя связанного с записью о выдаче
-    /// </summary>
-    /// <param name="bookLoanId">Идентификатор записи о выдаче</param>
-    /// <returns>DTO читателя</returns>
-    public async Task<ReaderDto> GetReader(ObjectId bookLoanId)
-    {
-        var loan = await repository.Read(bookLoanId) ?? throw new KeyNotFoundException($"Запись о выдаче с ID {bookLoanId} не найдена");
-
-        var reader = await readerRepository.Read(loan.ReaderId)
-            ?? throw new KeyNotFoundException($"Читатель с ID {loan.ReaderId} не найден для записи {bookLoanId}");
-
-        return mapper.Map<ReaderDto>(reader);
     }
 }
