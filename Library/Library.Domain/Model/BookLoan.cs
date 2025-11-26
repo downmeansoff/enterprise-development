@@ -17,6 +17,7 @@ public class BookLoan
     /// <summary>
     /// Идентификатор книги
     /// </summary>
+    [BsonElement("bookId")]
     public required ObjectId BookId { get; set; }
 
     /// <summary>
@@ -27,6 +28,7 @@ public class BookLoan
     /// <summary>
     /// Идентификатор читателя
     /// </summary>
+    [BsonElement("readerId")]
     public required ObjectId ReaderId { get; set; }
 
     /// <summary>
@@ -37,15 +39,18 @@ public class BookLoan
     /// <summary>
     /// Дата выдачи книги
     /// </summary>
+    [BsonElement("loanDate")]
     public required DateTime LoanDate { get; set; }
 
     /// <summary>
     /// Количество дней на которое выдана книга
     /// </summary>
+    [BsonElement("loanDays")]
     public int? LoanDays { get; set; }
 
     /// <summary>
     /// Дата возврата книги
     /// </summary>
+    [BsonElement("returnDate")]
     public DateTime? ReturnDate { get; set; }
 }

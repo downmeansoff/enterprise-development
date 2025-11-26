@@ -17,5 +17,6 @@ public class Publisher
     /// <summary>
     /// Название издательства
     /// </summary>
+    [BsonElement("name")]
     public required string Name { get; set; }
 }

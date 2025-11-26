@@ -17,5 +17,6 @@ public class EditionType
     /// <summary>
     /// Название вида издания
     /// </summary>
+    [BsonElement("name")]
     public required string Name { get; set; }
 }
