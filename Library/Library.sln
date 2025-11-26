@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Domain.Tests", "Lib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Infrastructure.EfCore", "Library.Infrastructure.EfCore\Library.Infrastructure.EfCore.csproj", "{765E9A13-F5E9-4AD9-9CD8-662C3E00CB83}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Application", "Library.Application\Library.Application.csproj", "{1DAD0236-6BCA-4912-AC1D-630A35645E2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Application.Contracts", "Library.Application.Contracts\Library.Application.Contracts.csproj", "{0DD15D36-5627-4F76-9470-5B23E45FB381}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{765E9A13-F5E9-4AD9-9CD8-662C3E00CB83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{765E9A13-F5E9-4AD9-9CD8-662C3E00CB83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{765E9A13-F5E9-4AD9-9CD8-662C3E00CB83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DAD0236-6BCA-4912-AC1D-630A35645E2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DAD0236-6BCA-4912-AC1D-630A35645E2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DAD0236-6BCA-4912-AC1D-630A35645E2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DAD0236-6BCA-4912-AC1D-630A35645E2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DD15D36-5627-4F76-9470-5B23E45FB381}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DD15D36-5627-4F76-9470-5B23E45FB381}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DD15D36-5627-4F76-9470-5B23E45FB381}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DD15D36-5627-4F76-9470-5B23E45FB381}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
