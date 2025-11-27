@@ -69,11 +69,7 @@ public class AnalyticsService(
             .Join(allReaders,
                   tr => tr.ReaderId,
                   r => r.Id,
-                  (tr, r) => new TopReaderAnalyticsDto
-                  {
-                      Reader = mapper.Map<ReaderDto>(r),
-                      BooksReadCount = tr.BooksReadCount
-                  })
+                  (tr, r) => new TopReaderAnalyticsDto(mapper.Map<ReaderDto>(r), tr.BooksReadCount))
             .OrderBy(x => x.Reader.FullName, _ruComparer)
             .ToList();
 
@@ -134,11 +130,7 @@ public class AnalyticsService(
             .Join(allPublishers,
                   ps => ps.PublisherId,
                   p => p.Id,
-                  (ps, p) => new TopPublisherAnalyticsDto
-                  {
-                      Publisher = mapper.Map<PublisherDto>(p),
-                      IssuedBookCount = ps.IssuedBookCount
-                  })
+                  (ps, p) => new TopPublisherAnalyticsDto(mapper.Map<PublisherDto>(p), ps.IssuedBookCount))
             .OrderByDescending(x => x.IssuedBookCount)
             .ThenBy(x => x.Publisher.Name, _ruComparer)
             .ToList();
@@ -173,11 +165,7 @@ public class AnalyticsService(
             .ToList();
 
         var finalDto = combinedResults
-            .Select(x => new BookPopularityAnalyticsDto
-            {
-                Book = mapper.Map<BookDto>(x.Book),
-                LoanCount = x.LoanCount
-            })
+            .Select(x => new BookPopularityAnalyticsDto(mapper.Map<BookDto>(x.Book), x.LoanCount))
             .ToList();
 
         return finalDto;
