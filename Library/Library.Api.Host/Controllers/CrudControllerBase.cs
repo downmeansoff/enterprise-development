@@ -27,6 +27,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(IApplicat
     /// <returns>Созданный объект DTO с присвоенным идентификатором</returns>
     [HttpPost]
     [ProducesResponseType(201)]
+    [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     public async Task<ActionResult<TDto>> Create(TCreateUpdateDto newDto)
     {
@@ -36,6 +37,11 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(IApplicat
             var res = await appService.Create(newDto);
             logger.LogInformation("{method} method of {controller} executed successfully", nameof(Create), GetType().Name);
             return CreatedAtAction(nameof(this.Create), res);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            logger.LogWarning(ex, "Not found during {method} method of {controller} with {@dto} parameter", nameof(Create), GetType().Name, newDto);
+            return NotFound($"{ex.Message}");
         }
         catch (Exception ex)
         {
@@ -65,6 +71,7 @@ public abstract class CrudControllerBase<TDto, TCreateUpdateDto, TKey>(IApplicat
         }
         catch (KeyNotFoundException ex)
         {
+            logger.LogWarning(ex, "Not found during {method} method of {controller} with {@dto} parameter", nameof(Create), GetType().Name, newDto);
             return NotFound($"{ex.Message}");
         }
         catch (Exception ex)

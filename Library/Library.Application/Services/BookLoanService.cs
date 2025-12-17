@@ -11,8 +11,14 @@ namespace Library.Application.Services;
 /// Сервис для выполнения CRUD операций с сущностью BookLoan
 /// </summary>
 /// <param name="repository">Репозиторий для доступа к данным BookLoan</param>
+/// <param name="bookRepository">Репозиторий для доступа к данным Book</param>
+/// <param name="readerRepository">Репозиторий для доступа к данным Reader</param>
 /// <param name="mapper">Экземпляр AutoMapper для преобразования DTO</param>
-public class BookLoanService(IRepository<BookLoan, ObjectId> repository, IMapper mapper) : IApplicationService<BookLoanDto, BookLoanCreateUpdateDto, ObjectId>
+public class BookLoanService(
+    IRepository<BookLoan, ObjectId> repository,
+    IRepository<Book, ObjectId> bookRepository,
+    IRepository<Reader, ObjectId> readerRepository,
+    IMapper mapper) : IApplicationService<BookLoanDto, BookLoanCreateUpdateDto, ObjectId>
 {
     /// <summary>
     /// Создает новую запись о выдаче книги
@@ -21,6 +27,9 @@ public class BookLoanService(IRepository<BookLoan, ObjectId> repository, IMapper
     /// <returns>Созданный BookLoanDto</returns>
     public async Task<BookLoanDto> Create(BookLoanCreateUpdateDto dto)
     {
+        _ = await bookRepository.Read(dto.BookId) ?? throw new KeyNotFoundException($"Книга с ID {dto.BookId} не найдена");
+        _ = await readerRepository.Read(dto.ReaderId) ?? throw new KeyNotFoundException($"Читатель с ID {dto.ReaderId} не найден");
+
         var entity = mapper.Map<BookLoan>(dto);
 
         var createdEntity = await repository.Create(entity);

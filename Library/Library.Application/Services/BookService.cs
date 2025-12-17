@@ -6,6 +6,7 @@ using Library.Application.Contracts.Publishers;
 using Library.Domain;
 using Library.Domain.Model;
 using MongoDB.Bson;
+using System.Net;
 
 namespace Library.Application.Services;
 
@@ -31,6 +32,9 @@ public class BookService(
     /// <returns>Созданный BookDto</returns>
     public async Task<BookDto> Create(BookCreateUpdateDto dto)
     {
+        _ = await editionTypeRepository.Read(dto.EditionTypeId) ?? throw new KeyNotFoundException($"Вид издания с ID {dto.EditionTypeId} не найден");
+        _ = await publisherRepository.Read(dto.PublisherId) ?? throw new KeyNotFoundException($"Издательство с ID {dto.PublisherId} не найдено");
+
         var entity = mapper.Map<Book>(dto);
 
         var createdEntity = await repository.Create(entity);

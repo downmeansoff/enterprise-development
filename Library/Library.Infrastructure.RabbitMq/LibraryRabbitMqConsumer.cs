@@ -17,7 +17,7 @@ namespace Library.Infrastructure.RabbitMq;
 /// Каждое сообщение десериализуется и передаётся в application слой для создания записей
 /// Корректно освобождает ресурсы при остановке сервиса
 /// </summary>
-public class LibraryRabbitMqConsumer(IConnection connection, IServiceScopeFactory scopeFactory, IConfiguration configuration, ILogger<LibraryRabbitMqConsumer> logger) : BackgroundService
+public class LibraryRabbitMqConsumer(IConnection connection, IServiceScopeFactory scopeFactory, IConfiguration configuration, JsonSerializerOptions jsonOptions, ILogger<LibraryRabbitMqConsumer> logger) : BackgroundService
 {
     private readonly string _queueName = configuration.GetSection("RabbitMq")["QueueName"] ?? throw new KeyNotFoundException("QueueName section of RabbitMq is missing");
 
@@ -72,7 +72,7 @@ public class LibraryRabbitMqConsumer(IConnection connection, IServiceScopeFactor
         {
             stoppingToken.ThrowIfCancellationRequested();
 
-            var contracts = JsonSerializer.Deserialize<List<BookLoanCreateUpdateDto>>(args.Body.Span)
+            var contracts = JsonSerializer.Deserialize<List<BookLoanCreateUpdateDto>>(args.Body.Span, jsonOptions)
                 ?? throw new FormatException("Unable to parse contracts from message body");
 
             using var scope = scopeFactory.CreateScope();
@@ -80,7 +80,14 @@ public class LibraryRabbitMqConsumer(IConnection connection, IServiceScopeFactor
 
             foreach (var contract in contracts)
             {
-                await bookLoanService.Create(contract);
+                try
+                {
+                    await bookLoanService.Create(contract);
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    logger.LogWarning(ex, "Skipping contract due to missing related entity in {queue} with BookId {bookId} and ReaderId {readerId}", _queueName, contract.BookId, contract.ReaderId);
+                }
             }
         }
         catch (Exception ex)

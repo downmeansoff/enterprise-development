@@ -1,6 +1,7 @@
 using Library.Api.Host;
 using Library.Application;
 using Library.Application.Contracts;
+using Library.Application.Contracts.Analytics;
 using Library.Application.Contracts.BookLoans;
 using Library.Application.Contracts.Books;
 using Library.Application.Contracts.EditionTypes;
@@ -12,17 +13,24 @@ using Library.Domain.Data;
 using Library.Domain.Model;
 using Library.Infrastructure.EfCore;
 using Library.Infrastructure.EfCore.Repositories;
+using Library.Infrastructure.RabbitMq;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Library.Application.Contracts.Analytics;
-using Library.Infrastructure.RabbitMq;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
+
+builder.Services.AddSingleton(sp =>
+{
+    var o = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+    o.Converters.Add(new ObjectIdJsonConverter());
+    return o;
+});
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {

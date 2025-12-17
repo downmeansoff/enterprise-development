@@ -37,7 +37,8 @@ public class BookController(IBookService service, ILogger<BookController> logger
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(ex.Message);
+            logger.LogWarning(ex, "Not found during {method} method of {controller} with {@bookId} parameter", nameof(Create), GetType().Name, bookId);
+            return NotFound($"{ex.Message}");
         }
         catch (Exception ex)
         {
@@ -66,7 +67,8 @@ public class BookController(IBookService service, ILogger<BookController> logger
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(ex.Message);
+            logger.LogWarning(ex, "Not found during {method} method of {controller} with {@bookId} parameter", nameof(Create), GetType().Name, bookId);
+            return NotFound($"{ex.Message}");
         }
         catch (Exception ex)
         {
@@ -80,7 +82,7 @@ public class BookController(IBookService service, ILogger<BookController> logger
     /// </summary>
     /// <param name="bookId">Идентификатор книги</param>
     /// <returns>Список DTO записей о выдаче</returns>
-    [HttpGet("{bookId}/loans")]
+    [HttpGet("{bookId}/Loans")]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
     public async Task<ActionResult<IList<BookLoanDto>>> GetLoans(ObjectId bookId)

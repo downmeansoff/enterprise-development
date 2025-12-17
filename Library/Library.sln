@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.ServiceDefaults", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Infrastructure.RabbitMq", "Library.Infrastructure.RabbitMq\Library.Infrastructure.RabbitMq.csproj", "{67B45F08-5F3C-4B32-A942-7FBFF205B60D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Generator.RabbitMq.Host", "Library.Generator.RabbitMq.Host\Library.Generator.RabbitMq.Host.csproj", "{EF142C43-F779-C09D-C318-7D12EB322203}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{67B45F08-5F3C-4B32-A942-7FBFF205B60D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67B45F08-5F3C-4B32-A942-7FBFF205B60D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67B45F08-5F3C-4B32-A942-7FBFF205B60D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF142C43-F779-C09D-C318-7D12EB322203}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF142C43-F779-C09D-C318-7D12EB322203}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF142C43-F779-C09D-C318-7D12EB322203}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF142C43-F779-C09D-C318-7D12EB322203}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
