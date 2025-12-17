@@ -18,6 +18,7 @@ using Microsoft.OpenApi.Any;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Library.Application.Contracts.Analytics;
+using Library.Infrastructure.RabbitMq;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,6 +78,9 @@ builder.Services.AddDbContext<LibraryDbContext>((services, o) =>
     var db = services.GetRequiredService<IMongoDatabase>();
     o.UseMongoDB(db.Client, db.DatabaseNamespace.DatabaseName);
 });
+
+builder.Services.AddHostedService<LibraryRabbitMqConsumer>();
+builder.AddRabbitMQClient("library-rabbitmq");
 
 var app = builder.Build();
 

@@ -8,7 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.MongoDB.Driver" Version="13.0.0" />
+    <PackageReference Include="Aspire.MongoDB.Driver" Version="13.0.2" />
+	<PackageReference Include="Aspire.RabbitMQ.Client" Version="13.0.2" />
 	<PackageReference Include="Microsoft.OpenApi" Version="1.6.14" />    
 	<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.1" />
   </ItemGroup>
@@ -16,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Library.Application\Library.Application.csproj" />
     <ProjectReference Include="..\Library.Infrastructure.EfCore\Library.Infrastructure.EfCore.csproj" />
+    <ProjectReference Include="..\Library.Infrastructure.RabbitMq\Library.Infrastructure.RabbitMq.csproj" />
     <ProjectReference Include="..\Library.ServiceDefaults\Library.ServiceDefaults.csproj" />
   </ItemGroup>
 
